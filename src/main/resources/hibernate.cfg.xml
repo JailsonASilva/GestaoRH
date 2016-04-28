@@ -40,6 +40,7 @@
 		<mapping class="br.pro.gestao.rh.domain.Banco"/>
 		<mapping class="br.pro.gestao.rh.domain.Cargo"/>
 		<mapping class="br.pro.gestao.rh.domain.Parentesco"/>
+		<mapping class="br.pro.gestao.rh.domain.Empregado"/>
 		<mapping class="br.pro.gestao.rh.domain.CausaAcidente"/>
 
 	</session-factory>
