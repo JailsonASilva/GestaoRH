@@ -26,6 +26,16 @@ public class Empregado extends GenericDomain {
 	private String carteiraSaude;
 	private String endereco;
 	private String cep;
+	private Estado estado;
+	private Cidade cidade;
+	private Bairro bairro;
+	private String numero;
+	private String complemento;
+	private String email;
+	private String telefone;
+	private String celular1;
+	private String celular2;
+	private String observacao;
 	
 	
 }
