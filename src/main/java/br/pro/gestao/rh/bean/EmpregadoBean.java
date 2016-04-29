@@ -44,10 +44,10 @@ public class EmpregadoBean implements Serializable {
 
 	private EstadoCivil civil;
 	private List<EstadoCivil> estadoCivis;
-	
+
 	private Banco banco;
 	private List<Banco> bancos;
-	
+
 	private Cargo cargo;
 	private List<Cargo> cargos;
 
@@ -102,7 +102,6 @@ public class EmpregadoBean implements Serializable {
 	public Estado getEstado() {
 		return estado;
 	}
-
 
 	public void setEstado(Estado estado) {
 		this.estado = estado;
@@ -167,8 +166,12 @@ public class EmpregadoBean implements Serializable {
 	@PostConstruct
 	public void listar() {
 		try {
-			EmpregadoDAO empregadoDAO = new EmpregadoDAO();
-			empregados = empregadoDAO.listar("nome");
+			// EmpregadoDAO empregadoDAO = new EmpregadoDAO();
+			// empregados = empregadoDAO.listar("nome");				
+
+			cidades = new ArrayList<>();
+
+			bairros = new ArrayList<>();
 
 		} catch (Exception erro) {
 			Messages.addGlobalError("Erro ao Listar Empregados!");
@@ -179,30 +182,13 @@ public class EmpregadoBean implements Serializable {
 	public void novo() {
 		try {
 			empregado = new Empregado();
-			
+
 			estado = new Estado();
 			cidade = new Cidade();
+			bairro = new Bairro();
 			banco = new Banco();
-			cargo = new Cargo();			
-
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar("nome");
-
-			CidadeDAO cidadeDAO = new CidadeDAO();
-			cidades = cidadeDAO.listar("nome");
-
-			BairroDAO bairroDAO = new BairroDAO();
-			bairros = bairroDAO.listar("nome");
-			//bairros = new ArrayList<>();
-			
-			BancoDAO bancoDAO = new BancoDAO();
-			bancos = bancoDAO.listar("nome");
-			
-			CargoDAO cargoDAO = new CargoDAO();
-			cargos = cargoDAO.listar("nome");
-			
-			EstadoCivilDAO estadoCivilDAO = new EstadoCivilDAO();
-			estadoCivis = estadoCivilDAO.listar("nome");			
+			cargo = new Cargo();
+			civil = new EstadoCivil();
 
 		} catch (Exception erro) {
 			Messages.addGlobalError("Erro ao Gerar Novo Empregado!");
@@ -213,32 +199,9 @@ public class EmpregadoBean implements Serializable {
 	public void editar(ActionEvent evento) {
 		try {
 			empregado = (Empregado) evento.getComponent().getAttributes().get("empregadoSelecionado");
-			
-			estado = new Estado();
-			cidade = new Cidade();
-			banco = new Banco();
-			cargo = new Cargo();
 
 			cidade = empregado.getBairro().getCidade();
 			estado = empregado.getBairro().getCidade().getEstado();
-
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar("nome");
-
-			CidadeDAO cidadeDAO = new CidadeDAO();
-			cidades = cidadeDAO.listar("nome");
-
-			BairroDAO bairroDAO = new BairroDAO();
-			bairros = bairroDAO.listar("nome");
-			
-			BancoDAO bancoDAO = new BancoDAO();
-			bancos = bancoDAO.listar("nome");
-			
-			CargoDAO cargoDAO = new CargoDAO();
-			cargos = cargoDAO.listar("nome");	
-			
-			EstadoCivilDAO estadoCivilDAO = new EstadoCivilDAO();
-			estadoCivis = estadoCivilDAO.listar("nome");			
 
 		} catch (RuntimeException erro) {
 			Messages.addFlashGlobalError("Ocorreu um erro ao tentar selecionar um Empregado");
@@ -255,30 +218,31 @@ public class EmpregadoBean implements Serializable {
 
 			empregado = new Empregado();
 
-			estado = new Estado();
-			cidade = new Cidade();
-
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar("nome");
-
-			CidadeDAO cidadeDAO = new CidadeDAO();
-			cidades = cidadeDAO.listar("nome");
+			cidades = new ArrayList<>();
 
 			bairros = new ArrayList<>();
-			
-			BancoDAO bancoDAO = new BancoDAO();
-			bancos = bancoDAO.listar("nome");
-			
-			CargoDAO cargoDAO = new CargoDAO();
-			cargos = cargoDAO.listar("nome");	
-			
-			EstadoCivilDAO estadoCivilDAO = new EstadoCivilDAO();
-			estadoCivis = estadoCivilDAO.listar("nome");			
 
 			Messages.addGlobalInfo("Pessoa salva com sucesso");
 
 		} catch (RuntimeException erro) {
 			Messages.addGlobalError("Ocorreu um erro ao tentar salvar a pessoa");
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluir(ActionEvent evento) {
+		try {
+			empregado = (Empregado) evento.getComponent().getAttributes().get("empregadoSelecionado");
+
+			EmpregadoDAO empregadoDAO = new EmpregadoDAO();
+			empregadoDAO.excluir(empregado);
+
+			empregados = empregadoDAO.listar("nome");
+
+			Messages.addGlobalInfo("Empregado removido com sucesso");
+
+		} catch (RuntimeException erro) {
+			Messages.addFlashGlobalError("Ocorreu um erro ao tentar remover a Empregado");
 			erro.printStackTrace();
 		}
 	}
@@ -311,20 +275,25 @@ public class EmpregadoBean implements Serializable {
 		}
 	}
 
-	public void excluir(ActionEvent evento) {
+	public void popularCargo() {
 		try {
-			empregado = (Empregado) evento.getComponent().getAttributes().get("empregadoSelecionado");
-
-			EmpregadoDAO empregadoDAO = new EmpregadoDAO();
-			empregadoDAO.excluir(empregado);
-
-			empregados = empregadoDAO.listar("nome");
-
-			Messages.addGlobalInfo("Empregado removida com sucesso");
+			CargoDAO cargoDAO = new CargoDAO();
+			cargos = cargoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
-			Messages.addFlashGlobalError("Ocorreu um erro ao tentar remover a Empregado");
+			Messages.addFlashGlobalError("Ocorreu um erro ao tentar popular Cargo!");
 			erro.printStackTrace();
 		}
 	}
+	
+	public void popularEstado() {
+		try {
+			EstadoDAO estadoDAO = new EstadoDAO();
+			estados = estadoDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			Messages.addFlashGlobalError("Ocorreu um erro ao tentar popular Estados!");
+			erro.printStackTrace();
+		}
+	}	
 }

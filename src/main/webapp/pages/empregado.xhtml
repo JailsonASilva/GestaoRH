@@ -53,14 +53,14 @@
 						update=":mensagem :formListagem:tabela">
 						<p:confirm header="Confirmação"
 							message="Deseja excluir a empregado?" icon="ui-icon-alert" />
-						<f:attribute name="empregadoSelecionada" value="#{empregado}" />
+						<f:attribute name="empregadoSelecionado" value="#{empregado}" />
 					</p:commandButton>
 
 					<p:commandButton icon="ui-icon-pencil"
 						actionListener="#{empregadoBean.editar}"
 						update=":mensagem :formCadastro:painel"
 						oncomplete="PF('dialogo').show();">
-						<f:attribute name="empregadoSelecionada" value="#{empregado}" />
+						<f:attribute name="empregadoSelecionado" value="#{empregado}" />
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:commandButton>
@@ -86,8 +86,8 @@
 
 				<h3 style="margin-top: 0"></h3>
 
-				<p:tabView>
-					<p:tab title="Dados Pessoais">
+				<p:tabView id="tabView">
+					<p:tab id="tabDadosPessoais" title="Dados Pessoais">
 						<p:panel>
 							<h:panelGrid columns="4" columnClasses="label, value">
 
@@ -220,14 +220,15 @@
 									value="#{empregadoBean.empregado.complemento}" />
 
 								<p:outputLabel for="estado" value="Estado" />
-								<p:selectOneMenu id="estado" filter="true" required="true"
-									requiredMessage="O campo 'Estado' é obrigatório"
+								<p:selectOneMenu id="estado" filter="true"
 									converter="omnifaces.SelectItemsConverter"
 									value="#{empregadoBean.estado}">
 									<f:selectItem noSelectionOption="true"
-										itemLabel="Selecione um Estado" />
+										itemLabel="Selecione um estado" />
 									<f:selectItems value="#{empregadoBean.estados}" var="estado"
 										itemValue="#{estado}" itemLabel="#{estado.nome}" />
+									<p:ajax listener="#{empregadoBean.popularCidade}"
+										update=":formCadastro:tabView:cidade" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="cidade" value="Cidade" />
@@ -239,6 +240,8 @@
 										itemLabel="Selecione um Cidade" />
 									<f:selectItems value="#{empregadoBean.cidades}" var="cidade"
 										itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+									<p:ajax listener="#{empregadoBean.popularBairro}"
+										update=":formCadastro:tabView:bairro" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="bairro" value="Bairro" />
@@ -345,6 +348,11 @@
 										itemLabel="Selecione um Empregado" />
 									<f:selectItems value="#{empregadoBean.cargos}" var="cargo"
 										itemValue="#{cargo}" itemLabel="#{cargo.nome}" />
+
+
+									<f:ajax onevent="onclick" listener="#{empregadoBean.popularCargo}"
+										udpate=":formCadastro:tabView:cargo" />
+
 								</p:selectOneMenu>
 
 								<p:outputLabel for="secao" value="Seção" />
@@ -444,86 +452,6 @@
 									value="#{empregadoBean.empregado.enderecoBanco}" />
 							</h:panelGrid>
 						</p:panel>
-					</p:tab>
-
-					<p:tab title="Beneficiários">
-
-						<p:panel header="Beneficiários - Listagem">
-							<p:dataTable id="tabelaBeneficiario"
-								emptyMessage="Nenhum empregado encontrado." paginator="true"
-								value="#{empregadoBean.empregados}" var="empregado" rows="10">
-								<f:facet name="footer">
-									<p:commandButton value="Novo"
-										oncomplete="PF('dialogoBeneficiario').show();"
-										actionListener="#{empregadoBean.novo}">
-										<f:actionListener
-											type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-									</p:commandButton>
-								</f:facet>
-
-								<p:column headerText="Nome" sortBy="#{empregado.nome}"
-									filterBy="#{empregado.nome}">
-									<h:outputText value="" />
-								</p:column>
-
-								<p:column headerText="Parentesco" sortBy="#{empregado.nome}"
-									filterBy="#{empregado.nome}">
-									<h:outputText value="" />
-								</p:column>
-
-								<p:column headerText="Nascido em" sortBy="#{empregado.nome}"
-									filterBy="#{empregado.nome}">
-									<h:outputText value="" />
-								</p:column>
-
-								<p:column headerText="Opções">
-									<p:commandButton icon="ui-icon-trash"
-										actionListener="#{empregadoBean.excluir}">
-										<p:confirm header="Confirmação"
-											message="Deseja Excluir este Empregado?" icon="ui-icon-alert" />
-										<f:attribute name="empregadoSelecionado" value="#{empregado}" />
-									</p:commandButton>
-
-									<p:commandButton icon="ui-icon-pencil"
-										actionListener="#{empregadoBean.editar}"
-										oncomplete="PF('dialogo').show();">
-										<f:attribute name="empregadoSelecionado" value="#{empregado}" />
-										<f:actionListener
-											type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-									</p:commandButton>
-								</p:column>
-
-							</p:dataTable>
-
-							<p:confirmDialog global="true">
-								<p:commandButton value="Sim" type="button"
-									styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-								<p:commandButton value="Não" type="button"
-									styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-							</p:confirmDialog>
-						</p:panel>
-
-						<p:dialog header="Empregados - Cadastro"
-							widgetVar="dialogoBeneficiario" draggable="false"
-							resizable="false" modal="false" closable="false">
-							<h:form id="formCadastroBeneficiario">
-
-								<h:panelGrid id="painelBeneficiario" columns="2">
-									<p:outputLabel for="nome" value="Nome:" />
-									<p:inputText id="nome" maxlength="50" size="30" required="true"
-										requiredMessage="Campo 'Nome' Obrigatório"
-										value="#{empregadoBean.empregado.nome}" />
-								</h:panelGrid>
-
-								<h:panelGrid columns="2">
-									<p:commandButton value="Salvar"
-										actionListener="#{empregadoBean.salvar}" />
-									<p:commandButton value="Fechar"
-										oncomplete="PF('dialogoBeneficiario').hide();" />
-								</h:panelGrid>
-							</h:form>
-						</p:dialog>
-
 					</p:tab>
 				</p:tabView>
 

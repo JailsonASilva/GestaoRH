@@ -123,7 +123,8 @@ public class Empregado extends GenericDomain {
 	@Temporal(TemporalType.DATE)	
 	private Date dataDemissao;
 	
-	@Column(length = 50, nullable = false)
+	@ManyToOne
+	@JoinColumn(nullable = false)
 	private Cargo cargo;
 	
 	@Column(length = 30, nullable = true)
