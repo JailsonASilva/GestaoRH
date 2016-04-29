@@ -12,51 +12,55 @@
 	<p:growl id="mensagem" />
 
 	<h:form id="formListagem">
-		<p:panel header="Registro Empregador - Listagem">
-			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-				paginator="true" value="#{registroBean.registros}" var="registro"
+		<p:panel header="Empregado - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum empregado encontrado."
+				paginator="true" value="#{empregadoBean.empregados}" var="empregado"
 				rows="10">
 				<f:facet name="footer">
 					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-						actionListener="#{registroBean.novo}">
+						actionListener="#{empregadoBean.novo}"
+						update=":formCadastro:painel">>
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:commandButton>
 				</f:facet>
 
-				<p:column headerText="Nº Matrícula" sortBy="#{registro.nome}"
-					filterBy="#{registro.nome}">
-					<h:outputText value="#{registro.nome}" />
+				<p:column headerText="Nº Matrícula"
+					sortBy="#{empregado.numeroMatricula}"
+					filterBy="#{empregado.numeroMatricula}">
+					<h:outputText value="#{empregado.numeroMatricula}" />
 				</p:column>
 
-				<p:column headerText="Nome" sortBy="#{registro.nome}"
-					filterBy="#{registro.nome}">
-					<h:outputText value="#{registro.nome}" />
+				<p:column headerText="Nome" sortBy="#{empregado.nome}"
+					filterBy="#{empregado.nome}">
+					<h:outputText value="#{empregado.nome}" />
 				</p:column>
 
-				<p:column headerText="Data Nascimento" sortBy="#{registro.nome}"
-					filterBy="#{registro.nome}">
-					<h:outputText value="#{registro.nome}" />
+				<p:column headerText="Data Nascimento"
+					sortBy="#{empregado.dataNascimento}"
+					filterBy="#{empregado.dataNascimento}">
+					<h:outputText value="#{empregado.dataNascimento}" />
 				</p:column>
 
-				<p:column headerText="CPF" sortBy="#{registro.nome}"
-					filterBy="#{registro.nome}">
-					<h:outputText value="#{registro.nome}" />
+				<p:column headerText="CPF" sortBy="#{empregado.cpf}"
+					filterBy="#{empregado.cpf}">
+					<h:outputText value="#{empregado.cpf}" />
 				</p:column>
 
 				<p:column headerText="Opções">
 					<p:commandButton icon="ui-icon-trash"
-						actionListener="#{registroBean.excluir}"
+						actionListener="#{empregadoBean.excluir}"
 						update=":mensagem :formListagem:tabela">
 						<p:confirm header="Confirmação"
-							message="Deseja Excluir este Cargo?" icon="ui-icon-alert" />
-						<f:attribute name="registroSelecionado" value="#{registro}" />
+							message="Deseja excluir a empregado?" icon="ui-icon-alert" />
+						<f:attribute name="empregadoSelecionada" value="#{empregado}" />
 					</p:commandButton>
 
 					<p:commandButton icon="ui-icon-pencil"
-						actionListener="#{registroBean.editar}"
+						actionListener="#{empregadoBean.editar}"
+						update=":mensagem :formCadastro:painel"
 						oncomplete="PF('dialogo').show();">
-						<f:attribute name="registroSelecionado" value="#{registro}" />
+						<f:attribute name="empregadoSelecionada" value="#{empregado}" />
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:commandButton>
@@ -73,8 +77,9 @@
 		</p:panel>
 	</h:form>
 
-	<p:dialog header="Registro do Empregado - Cadastro" widgetVar="dialogo"
-		draggable="false" resizable="false" modal="true" closable="false">
+	<p:dialog header="empregado do Empregado - Cadastro"
+		widgetVar="dialogo" draggable="false" resizable="false" modal="true"
+		closable="false">
 		<h:form id="formCadastro">
 			<h:panelGrid id="painel" columns="2">
 				<p:growl id="msgs" showDetail="true" />
@@ -89,38 +94,39 @@
 								<p:outputLabel for="ordem" value="Nº de Ordem" />
 								<p:inputText id="ordem" maxlength="5" size="5" required="true"
 									requiredMessage="Campo 'Nº de Ordem' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.numeroOrdem}" />
 
 								<p:outputLabel for="nome" value="Nome" />
 								<p:inputText id="nome" maxlength="60" size="60" required="true"
 									requiredMessage="Campo 'Nome' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.nome}" />
 
 								<p:outputLabel for="matricula" value="Nº Matrícula" />
 								<p:inputText id="matricula" maxlength="15" size="15"
 									required="true"
 									requiredMessage="Campo 'Nº Matrícula' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.numeroMatricula}" />
 
 								<p:outputLabel for="pai" value="Pai" />
 								<p:inputText id="pai" maxlength="60" size="60"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.pai}" />
 
 								<p:outputLabel for="mae" value="Mãe" />
 								<p:inputText id="mae" maxlength="60" size="60" required="true"
 									requiredMessage="Campo 'Mãe' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.mae}" />
 
 								<p:outputLabel for="nacionalidade" value="Nacionalidade" />
 								<p:inputText id="nacionalidade" maxlength="40" size="40"
 									required="true"
 									requiredMessage="Campo 'Nacionalidade' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.nacionalidade}" />
 
 								<p:outputLabel for="dataNascimento" value="Data de Nascimento" />
 								<p:calendar id="dataNascimento"
-									value="#{clienteBean.cliente.dataCadastro}" required="true"
-									requiredMessage="O campo 'Data de Cadastro' é obrigatório"
+									value="#{empregadoBean.empregado.dataNascimento}"
+									required="true"
+									requiredMessage="O campo 'Data de Nascimento' é obrigatório"
 									size="10" locale="pt_BR" showButtonPanel="true"
 									navigator="true" />
 
@@ -128,11 +134,12 @@
 								<p:selectOneMenu id="estadoCivil" filter="true" required="true"
 									requiredMessage="O campo 'Estado Civil' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.cidade}">
+									value="#{empregadoBean.empregado.estaoCivil}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Estado Civil" />
-									<f:selectItems value="#{pessoaBean.cidades}" var="cidade"
-										itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+									<f:selectItems value="#{empregadoBean.estadoCivis}"
+										var="estadoCivil" itemValue="#{estadoCivil}"
+										itemLabel="#{estadoCivil.nome}" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="localNascimento" value="Local de Nascimento" />
@@ -140,51 +147,51 @@
 									required="true"
 									requiredMessage="O campo 'Local de Nascimento' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.cidade}">
+									value="#{empregadoBean.empregado.localNascimento}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Local de Nascimento" />
-									<f:selectItems value="#{pessoaBean.cidades}" var="cidade"
+									<f:selectItems value="#{empregadoBean.cidades}" var="cidade"
 										itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="cpf" value="CPF:" />
 								<p:inputMask id="cpf" mask="999.999.999-99" size="14"
-									value="#{pessoaBean.pessoa.cpf}" required="true"
+									value="#{empregadoBean.empregado.cpf}" required="true"
 									requiredMessage="O campo 'CPF' é obrigatório" />
 
 								<p:outputLabel for="identidade" value="Identidade" />
 								<p:inputText id="identidade" maxlength="25" size="25"
 									required="true"
 									requiredMessage="Campo 'Identidade' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.identidade}" />
 
 								<p:outputLabel for="carteira" value="Carteira Profissional" />
 								<p:inputText id="carteira" maxlength="25" size="25"
 									required="true"
 									requiredMessage="Campo 'Carteira Profissional' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.carteiraProfissional}" />
 
 								<p:outputLabel for="serie" value="Série" />
 								<p:inputText id="serie" maxlength="10" size="10"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.serie}" />
 
 								<p:outputLabel for="reservista" value="Carteira de Reservista" />
 								<p:inputText id="reservista" maxlength="25" size="25"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.carteiraReservista}" />
 
 								<p:outputLabel for="categoria" value="Categoria" />
 								<p:inputText id="categoria" maxlength="25" size="25"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.categoria}" />
 
 								<p:outputLabel for="titulo" value="Título de Eleitor" />
 								<p:inputText id="titulo" maxlength="25" size="25"
 									required="true"
 									requiredMessage="Campo 'Título Eleitor' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.tituloEleitor}" />
 
 								<p:outputLabel for="saude" value="Carteira de Saúde" />
 								<p:inputText id="saude" maxlength="25" size="25"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.carteiraSaude}" />
 							</h:panelGrid>
 						</p:panel>
 					</p:tab>
@@ -195,35 +202,31 @@
 
 								<p:outputLabel for="cep" value="CEP" />
 								<p:inputMask id="cep" mask="99.999-999" size="10"
-									value="#{pessoaBean.pessoa.cep}" required="true"
+									value="#{empregadoBean.empregado.cep}" required="true"
 									requiredMessage="O campo 'CEP' é obrigatório" />
 
 								<p:outputLabel for="endereco" value="Endereço" />
 								<p:inputText id="endereco" maxlength="100" size="80"
 									required="true" requiredMessage="Campo 'Endereço' Obrigatório"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.endereco}" />
 
-								<p:outputLabel value="Número" />
-								<p:inputText maxlength="5" size="10"
-									value="#{pessoaBean.pessoa.numero}" required="true"
-									requiredMessage="O campo 'Número' é obrigatório"
-									converterMessage="Informe um valor válido para o campo 'Número'"
-									validatorMessage="Informe um valor entre 1 e 32767 para o campo 'Número'">
-									<f:validateLongRange minimum="1" maximum="32767" />
-								</p:inputText>
+								<p:outputLabel for="numero" value="Número" />
+								<p:inputText id="numero" maxlength="10" size="10"
+									required="true" requiredMessage="Campo 'Número' Obrigatório"
+									value="#{empregadoBean.empregado.numero}" />
 
 								<p:outputLabel for="complemento" value="Complemento" />
 								<p:inputText id="complemento" maxlength="70" size="55"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.complemento}" />
 
 								<p:outputLabel for="estado" value="Estado" />
 								<p:selectOneMenu id="estado" filter="true" required="true"
 									requiredMessage="O campo 'Estado' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.cidade}">
+									value="#{empregadoBean.estado}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Estado" />
-									<f:selectItems value="#{pessoaBean.estados}" var="estado"
+									<f:selectItems value="#{empregadoBean.estados}" var="estado"
 										itemValue="#{estado}" itemLabel="#{estado.nome}" />
 								</p:selectOneMenu>
 
@@ -231,10 +234,10 @@
 								<p:selectOneMenu id="cidade" filter="true" required="true"
 									requiredMessage="O campo 'Cidade' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.cidade}">
+									value="#{empregadoBean.cidade}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Cidade" />
-									<f:selectItems value="#{pessoaBean.cidades}" var="cidade"
+									<f:selectItems value="#{empregadoBean.cidades}" var="cidade"
 										itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
 								</p:selectOneMenu>
 
@@ -242,35 +245,36 @@
 								<p:selectOneMenu id="bairro" filter="true" required="true"
 									requiredMessage="O campo 'Bairro' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.bairro}">
+									value="#{empregadoBean.empregado.bairro}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Bairro" />
-									<f:selectItems value="#{pessoaBean.bairros}" var="bairro"
+									<f:selectItems value="#{empregadoBean.bairros}" var="bairro"
 										itemValue="#{bairro}" itemLabel="#{bairro.nome}" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="telefone" value="Telefone" />
 								<p:inputMask id="telefone" mask="(99)9999-9999" size="15"
-									value="#{pessoaBean.pessoa.telefone}" required="true"
+									value="#{empregadoBean.empregado.telefone}" required="true"
 									requiredMessage="O campo 'Telefone' é obrigatório" />
 
 								<p:outputLabel for="celular" value="Celular 1" />
 								<p:inputMask id="celular" mask="(99)99999-9999" size="15"
-									value="#{pessoaBean.pessoa.celular}" required="true"
+									value="#{empregadoBean.empregado.celular1}" required="true"
 									requiredMessage="O campo 'Celular 1' é obrigatório" />
 
 								<p:outputLabel for="celular2" value="Celular 2" />
 								<p:inputMask id="celular2" mask="(99)99999-9999" size="15"
-									value="#{pessoaBean.pessoa.celular2}" required="true"
+									value="#{empregadoBean.empregado.celular2}" required="true"
 									requiredMessage="O campo 'Celular 2' é obrigatório" />
 
 								<p:outputLabel for="email" value="Email" />
 								<p:inputText id="email" maxlength="100" size="50"
-									value="#{pessoaBean.pessoa.email}" required="true"
+									value="#{empregadoBean.empregado.email}" required="true"
 									requiredMessage="O campo 'Email' é obrigatório" />
 
 								<p:outputLabel for="observacaoContato" value="Observação" />
-								<p:inputText id="observacaoContato" maxlength="100" size="80" />
+								<p:inputText id="observacaoContato" maxlength="100" size="80"
+									value="#{empregadoBean.empregado.observacao}" />
 
 							</h:panelGrid>
 						</p:panel>
@@ -285,7 +289,7 @@
 
 								<p:outputLabel for="altura" value="Altura" />
 								<p:inputText id="altura" maxlength="7" size="10"
-									value="#{produtoBean.produto.preco}"
+									value="#{empregadoBean.empregado.altura}"
 									converterMessage="Informe um valor válido para o campo 'Altura''"
 									validatorMessage="Informe um valor entre 0,01 e 3,00 para o Campo 'Altura'">
 									<f:validateDoubleRange minimum="0.01" maximum="3.00" />
@@ -294,7 +298,7 @@
 
 								<p:outputLabel for="peso" value="Peso" />
 								<p:inputText id="peso" maxlength="7" size="10"
-									value="#{produtoBean.produto.preco}"
+									value="#{empregadoBean.empregado.peso}"
 									converterMessage="Informe um valor válido para o campo 'Peso''"
 									validatorMessage="Informe um valor entre 0,01 e 200,00 para o Campo 'Peso'">
 									<f:validateDoubleRange minimum="0.01" maximum="200.00" />
@@ -302,17 +306,19 @@
 								</p:inputText>
 
 								<p:outputLabel for="cabelos" value="Cabelos" />
-								<p:inputText id="cabelos" maxlength="30" size="25" />
+								<p:inputText id="cabelos" maxlength="30" size="25"
+									value="#{empregadoBean.empregado.cabelo}" />
 
 								<p:outputLabel for="olhos" value="Olhos" />
-								<p:inputText id="olhos" maxlength="30" size="25" />
+								<p:inputText id="olhos" maxlength="30" size="25"
+									value="#{empregadoBean.empregado.olhos}" />
 
 								<p:outputLabel for="sinais" value="Sinais" />
-								<p:inputText id="sinais" maxlength="30" size="25" />
+								<p:inputText id="sinais" maxlength="30" size="25"
+									value="#{empregadoBean.empregado.sinais}" />
 							</h:panelGrid>
 						</p:panel>
 					</p:tab>
-
 
 					<p:tab title="Dados Contratuais">
 						<p:panel>
@@ -320,33 +326,34 @@
 
 								<p:outputLabel for="dataAdmissao" value="Data de Admissão" />
 								<p:calendar id="dataAdmissao"
-									value="#{clienteBean.cliente.dataCadastro}" required="true"
+									value="#{empregadoBean.empregado.dataAdmissao}" required="true"
 									requiredMessage="O campo 'Data de Admissão' é obrigatório"
 									size="10" locale="pt_BR" showButtonPanel="true"
 									navigator="true" />
 
 								<p:outputLabel for="dataDemissao" value="Data de Demissão" />
 								<p:calendar id="dataDemissao"
-									value="#{clienteBean.cliente.dataCadastro}" size="10"
+									value="#{empregadoBean.empregado.dataDemissao}" size="10"
 									locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 								<p:outputLabel for="cargo" value="Cargo" />
 								<p:selectOneMenu id="cargo" filter="true" required="true"
 									requiredMessage="O campo 'Cargo' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.bairro}">
+									value="#{empregadoBean.empregado.cargo}">
 									<f:selectItem noSelectionOption="true"
-										itemLabel="Selecione um Cargo" />
-									<f:selectItems value="#{pessoaBean.bairros}" var="bairro"
-										itemValue="#{bairro}" itemLabel="#{bairro.nome}" />
+										itemLabel="Selecione um Empregado" />
+									<f:selectItems value="#{empregadoBean.cargos}" var="cargo"
+										itemValue="#{cargo}" itemLabel="#{cargo.nome}" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="secao" value="Seção" />
-								<p:inputText id="secao" maxlength="30" size="25" />
+								<p:inputText id="secao" maxlength="30" size="25"
+									value="#{empregadoBean.empregado.secao}" />
 
 								<p:outputLabel for="salario" value="Salário Inicial R$" />
 								<p:inputText id="salario" maxlength="7" size="10"
-									value="#{produtoBean.produto.preco}"
+									value="#{empregadoBean.empregado.salario}"
 									converterMessage="Informe um valor válido para o campo 'Salário Inicial R$''"
 									validatorMessage="Informe um valor entre 0,01 e 999999,99 para o Campo 'Salário Inicial R$'">
 									<f:validateDoubleRange minimum="0.00" maximum="99999.99" />
@@ -355,7 +362,7 @@
 
 								<p:outputLabel for="comissao" value="Comissão" />
 								<p:inputText id="comissao" maxlength="7" size="10"
-									value="#{produtoBean.produto.preco}"
+									value="#{empregadoBean.empregado.comissao}"
 									converterMessage="Informe um valor válido para o campo 'Comissão''"
 									validatorMessage="Informe um valor entre 0,01 e 999999,99 para o Campo 'Comissão'">
 									<f:validateDoubleRange minimum="0.00" maximum="99999.99" />
@@ -363,10 +370,12 @@
 								</p:inputText>
 
 								<p:outputLabel for="tarefa" value="Tarefa" />
-								<p:inputText id="tarefa" maxlength="50" size="35" />
+								<p:inputText id="tarefa" maxlength="50" size="35"
+									value="#{empregadoBean.empregado.tarefa}" />
 
 								<p:outputLabel for="formaPagamento" value="Forma de Pagamento" />
-								<p:inputText id="formaPagamento" maxlength="30" size="25" />
+								<p:inputText id="formaPagamento" maxlength="30" size="25"
+									value="#{empregadoBean.empregado.formaPagamento}" />
 
 							</h:panelGrid>
 						</p:panel>
@@ -378,26 +387,26 @@
 
 								<p:outputLabel for="optante" value="Optante" />
 								<p:selectBooleanCheckbox id="optante"
-									value="#{clienteBean.cliente.liberado}" />
+									value="#{empregadoBean.empregado.optante}" />
 
 								<p:outputLabel for="dataOpcao" value="Data da Opção" />
 								<p:calendar id="dataOpcao"
-									value="#{clienteBean.cliente.dataCadastro}" size="10"
+									value="#{empregadoBean.empregado.dataOpcao}" size="10"
 									locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 								<p:outputLabel for="dataRetratacao" value="Data da Retratação" />
 								<p:calendar id="dataRetratacao"
-									value="#{clienteBean.cliente.dataCadastro}" size="10"
+									value="#{empregadoBean.empregado.dataRetracao}" size="10"
 									locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 								<p:outputLabel for="bancoFGTS" value="Banco" />
 								<p:selectOneMenu id="bancoFGTS" filter="true"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.bairro}">
+									value="#{empregadoBean.empregado.bancoFgts}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Banco" />
-									<f:selectItems value="#{pessoaBean.bairros}" var="bairro"
-										itemValue="#{bairro}" itemLabel="#{bairro.nome}" />
+									<f:selectItems value="#{empregadoBean.bancos}" var="banco"
+										itemValue="#{banco}" itemLabel="#{banco.nome}" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 						</p:panel>
@@ -409,28 +418,30 @@
 
 								<p:outputLabel for="dataPis" value="Cadastro em" />
 								<p:calendar id="dataPis"
-									value="#{clienteBean.cliente.dataCadastro}" size="10"
+									value="#{empregadoBean.empregado.cadastroPis}" size="10"
 									locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 								<p:outputLabel for="sobn" value="Sob Nº" />
-								<p:inputText id="sobn" maxlength="25" size="20" />
+								<p:inputText id="sobn" maxlength="25" size="20"
+									value="#{empregadoBean.empregado.numeroPis}" />
 
 								<p:outputLabel for="bancoPis" value="Banco" />
 								<p:selectOneMenu id="bancoPis" filter="true"
 									converter="omnifaces.SelectItemsConverter"
-									value="#{pessoaBean.pessoa.bairro}">
+									value="#{empregadoBean.empregado.bancoPis}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Banco" />
-									<f:selectItems value="#{pessoaBean.bairros}" var="bairro"
-										itemValue="#{bairro}" itemLabel="#{bairro.nome}" />
+									<f:selectItems value="#{empregadoBean.bancos}" var="banco"
+										itemValue="#{banco}" itemLabel="#{banco.nome}" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="agencia" value="Agência" />
-								<p:inputText id="agencia" maxlength="50" size="35" />
+								<p:inputText id="agencia" maxlength="50" size="35"
+									value="#{empregadoBean.empregado.agencia}" />
 
 								<p:outputLabel for="enderecoBanco" value="Endereço" />
 								<p:inputText id="enderecoBanco" maxlength="100" size="80"
-									value="#{cargoBean.cargo.nome}" />
+									value="#{empregadoBean.empregado.enderecoBanco}" />
 							</h:panelGrid>
 						</p:panel>
 					</p:tab>
@@ -439,44 +450,44 @@
 
 						<p:panel header="Beneficiários - Listagem">
 							<p:dataTable id="tabelaBeneficiario"
-								emptyMessage="Nenhum registro encontrado." paginator="true"
-								value="#{cargoBean.cargos}" var="cargo" rows="10">
+								emptyMessage="Nenhum empregado encontrado." paginator="true"
+								value="#{empregadoBean.empregados}" var="empregado" rows="10">
 								<f:facet name="footer">
 									<p:commandButton value="Novo"
 										oncomplete="PF('dialogoBeneficiario').show();"
-										actionListener="#{cargoBean.novo}">
+										actionListener="#{empregadoBean.novo}">
 										<f:actionListener
 											type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 									</p:commandButton>
 								</f:facet>
 
-								<p:column headerText="Nome" sortBy="#{cargo.nome}"
-									filterBy="#{cargo.nome}">
+								<p:column headerText="Nome" sortBy="#{empregado.nome}"
+									filterBy="#{empregado.nome}">
 									<h:outputText value="" />
 								</p:column>
 
-								<p:column headerText="Parentesco" sortBy="#{cargo.nome}"
-									filterBy="#{cargo.nome}">
+								<p:column headerText="Parentesco" sortBy="#{empregado.nome}"
+									filterBy="#{empregado.nome}">
 									<h:outputText value="" />
 								</p:column>
 
-								<p:column headerText="Nascido em" sortBy="#{cargo.nome}"
-									filterBy="#{cargo.nome}">
+								<p:column headerText="Nascido em" sortBy="#{empregado.nome}"
+									filterBy="#{empregado.nome}">
 									<h:outputText value="" />
 								</p:column>
 
 								<p:column headerText="Opções">
 									<p:commandButton icon="ui-icon-trash"
-										actionListener="#{cargoBean.excluir}">
+										actionListener="#{empregadoBean.excluir}">
 										<p:confirm header="Confirmação"
-											message="Deseja Excluir este Cargo?" icon="ui-icon-alert" />
-										<f:attribute name="cargoSelecionado" value="#{cargo}" />
+											message="Deseja Excluir este Empregado?" icon="ui-icon-alert" />
+										<f:attribute name="empregadoSelecionado" value="#{empregado}" />
 									</p:commandButton>
 
 									<p:commandButton icon="ui-icon-pencil"
-										actionListener="#{cargoBean.editar}"
+										actionListener="#{empregadoBean.editar}"
 										oncomplete="PF('dialogo').show();">
-										<f:attribute name="cargoSelecionado" value="#{cargo}" />
+										<f:attribute name="empregadoSelecionado" value="#{empregado}" />
 										<f:actionListener
 											type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 									</p:commandButton>
@@ -492,7 +503,7 @@
 							</p:confirmDialog>
 						</p:panel>
 
-						<p:dialog header="Cargos - Cadastro"
+						<p:dialog header="Empregados - Cadastro"
 							widgetVar="dialogoBeneficiario" draggable="false"
 							resizable="false" modal="false" closable="false">
 							<h:form id="formCadastroBeneficiario">
@@ -501,12 +512,12 @@
 									<p:outputLabel for="nome" value="Nome:" />
 									<p:inputText id="nome" maxlength="50" size="30" required="true"
 										requiredMessage="Campo 'Nome' Obrigatório"
-										value="#{cargoBean.cargo.nome}" />
+										value="#{empregadoBean.empregado.nome}" />
 								</h:panelGrid>
 
 								<h:panelGrid columns="2">
 									<p:commandButton value="Salvar"
-										actionListener="#{cargoBean.salvar}" />
+										actionListener="#{empregadoBean.salvar}" />
 									<p:commandButton value="Fechar"
 										oncomplete="PF('dialogoBeneficiario').hide();" />
 								</h:panelGrid>
@@ -520,8 +531,8 @@
 
 			<h:panelGrid columns="2">
 				<p:commandButton value="Salvar"
-					update=":mensagem :formCadastro:painel :formListagem:tabela"
-					actionListener="#{clienteBean.salvar}" />
+					actionListener="#{empregadoBean.salvar}"
+					update=":mensagem :formCadastro:painel :formListagem:tabela" />
 				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
 			</h:panelGrid>
 		</h:form>

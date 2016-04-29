@@ -74,14 +74,6 @@ public class Empregado extends GenericDomain {
 	
 	@ManyToOne
 	@JoinColumn(nullable = false)			
-	private Estado estado;
-	
-	@ManyToOne
-	@JoinColumn(nullable = false)			
-	private Cidade cidade;
-	
-	@ManyToOne
-	@JoinColumn(nullable = false)			
 	private Bairro bairro;
 	
 	@Column(length = 10, nullable = false)	
@@ -161,12 +153,25 @@ public class Empregado extends GenericDomain {
 	private Date dataRetracao;
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)		
+	@JoinColumn(nullable = true)		
 	private Banco bancoFgts;
 	
 	@Column(nullable = true)
 	@Temporal(TemporalType.DATE)		
 	private Date cadastroPis;
+	
+	@Column(nullable = true)
+	private String numeroPis;
+	
+	@ManyToOne
+	@JoinColumn(nullable = true)	
+	private Banco bancoPis;
+	
+	@Column(nullable = true)
+	private String agencia;
+	
+	@Column(nullable = true)
+	private String enderecoBanco;	
 	
 	public Long getNumeroOrdem() {
 		return numeroOrdem;
@@ -282,18 +287,7 @@ public class Empregado extends GenericDomain {
 	public void setCep(String cep) {
 		this.cep = cep;
 	}
-	public Estado getEstado() {
-		return estado;
-	}
-	public void setEstado(Estado estado) {
-		this.estado = estado;
-	}
-	public Cidade getCidade() {
-		return cidade;
-	}
-	public void setCidade(Cidade cidade) {
-		this.cidade = cidade;
-	}
+	
 	public Bairro getBairro() {
 		return bairro;
 	}
@@ -480,8 +474,4 @@ public class Empregado extends GenericDomain {
 	public void setEnderecoBanco(String enderecoBanco) {
 		this.enderecoBanco = enderecoBanco;
 	}
-	private String numeroPis;
-	private Banco bancoPis;
-	private String agencia;
-	private String enderecoBanco;
 }
