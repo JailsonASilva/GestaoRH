@@ -9,15 +9,15 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.glassfish.jersey.process.internal.RequestScoped;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.omnifaces.util.Messages;
 
 import br.pro.gestao.rh.dao.BairroDAO;
-import br.pro.gestao.rh.dao.BancoDAO;
-import br.pro.gestao.rh.dao.CargoDAO;
 import br.pro.gestao.rh.dao.CidadeDAO;
 import br.pro.gestao.rh.dao.EmpregadoDAO;
-import br.pro.gestao.rh.dao.EstadoCivilDAO;
-import br.pro.gestao.rh.dao.EstadoDAO;
 import br.pro.gestao.rh.domain.Bairro;
 import br.pro.gestao.rh.domain.Banco;
 import br.pro.gestao.rh.domain.Cargo;
@@ -25,6 +25,7 @@ import br.pro.gestao.rh.domain.Cidade;
 import br.pro.gestao.rh.domain.Empregado;
 import br.pro.gestao.rh.domain.Estado;
 import br.pro.gestao.rh.domain.EstadoCivil;
+import br.pro.gestao.rh.util.HibernateUtil;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -38,6 +39,9 @@ public class EmpregadoBean implements Serializable {
 
 	private Cidade cidade;
 	private List<Cidade> cidades;
+	private List<Cidade> cidadesNasc;
+
+	private Session sessao;
 
 	private Bairro bairro;
 	private List<Bairro> bairros;
@@ -163,15 +167,29 @@ public class EmpregadoBean implements Serializable {
 		this.estadoCivis = estadoCivis;
 	}
 
+	public List<Cidade> getCidadesNasc() {
+		return cidadesNasc;
+	}
+
+	public void setCidadesNasc(List<Cidade> cidadesNasc) {
+		this.cidadesNasc = cidadesNasc;
+	}
+
+	public void setSessao(Session sessao) {
+		this.sessao = sessao;
+	}
+
+	public Session getSessao() {
+		return sessao;
+	}
+
 	@PostConstruct
 	public void listar() {
 		try {
-			// EmpregadoDAO empregadoDAO = new EmpregadoDAO();
-			// empregados = empregadoDAO.listar("nome");				
+			EmpregadoDAO empregadoDAO = new EmpregadoDAO();
+			empregados = empregadoDAO.listar("nome");
 
-			cidades = new ArrayList<>();
-
-			bairros = new ArrayList<>();
+			sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 
 		} catch (Exception erro) {
 			Messages.addGlobalError("Erro ao Listar Empregados!");
@@ -189,6 +207,8 @@ public class EmpregadoBean implements Serializable {
 			banco = new Banco();
 			cargo = new Cargo();
 			civil = new EstadoCivil();
+
+			ListarFE();
 
 		} catch (Exception erro) {
 			Messages.addGlobalError("Erro ao Gerar Novo Empregado!");
@@ -275,25 +295,55 @@ public class EmpregadoBean implements Serializable {
 		}
 	}
 
-	public void popularCargo() {
+	@SuppressWarnings("unchecked")
+	@RequestScoped
+	public void ListarFE() {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargos = cargoDAO.listar("nome");
+			if (sessao.isOpen() == false) {
+				sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+			}
+
+			Criteria consulta = sessao.createCriteria(Estado.class);
+			consulta.addOrder(Order.asc("nome"));
+
+			estados = consulta.list();
+
+			consulta = sessao.createCriteria(Cargo.class);
+			consulta.addOrder(Order.asc("nome"));
+
+			cargos = consulta.list();
+
+			consulta = sessao.createCriteria(EstadoCivil.class);
+			consulta.addOrder(Order.asc("nome"));
+
+			estadoCivis = consulta.list();
+
+			consulta = sessao.createCriteria(Banco.class);
+			consulta.addOrder(Order.asc("nome"));
+
+			bancos = consulta.list();
+
+			consulta = sessao.createCriteria(Cidade.class);
+			consulta.addOrder(Order.asc("nome"));
+
+			cidadesNasc = consulta.list();
+
+			cidades = new ArrayList<>();
+
+			bairros = new ArrayList<>();
 
 		} catch (RuntimeException erro) {
-			Messages.addFlashGlobalError("Ocorreu um erro ao tentar popular Cargo!");
-			erro.printStackTrace();
+			Messages.addGlobalError("Erro ao Abrir Tabelas!");
+		}
+
+		finally {
+			sessao.close();
 		}
 	}
-	
-	public void popularEstado() {
-		try {
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar("nome");
 
-		} catch (RuntimeException erro) {
-			Messages.addFlashGlobalError("Ocorreu um erro ao tentar popular Estados!");
-			erro.printStackTrace();
+	public void fecharConexao() {
+		if (sessao.isOpen() == true) {
+			sessao.close();
 		}
-	}	
+	}
 }

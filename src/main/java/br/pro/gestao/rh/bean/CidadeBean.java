@@ -52,7 +52,10 @@ public class CidadeBean implements Serializable {
 		try {
 			CidadeDAO cidadeDAO = new CidadeDAO();
 			cidades = cidadeDAO.listar("nome");
-			
+
+			EstadoDAO estadoDAO = new EstadoDAO();
+			estados = estadoDAO.listar("nome");
+
 		} catch (RuntimeException erro) {
 			Messages.addFlashGlobalError("Ocorreu um erro ao tentar listar as cidades");
 			erro.printStackTrace();
@@ -63,9 +66,6 @@ public class CidadeBean implements Serializable {
 		try {
 			cidade = new Cidade();
 
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar("nome");
-			
 		} catch (RuntimeException erro) {
 			Messages.addFlashGlobalError("Ocorreu um erro ao gerar uma nova cidade");
 			erro.printStackTrace();
@@ -78,9 +78,6 @@ public class CidadeBean implements Serializable {
 			cidadeDAO.merge(cidade);
 
 			cidade = new Cidade();
-
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar();
 
 			cidades = cidadeDAO.listar("nome");
 
@@ -101,23 +98,20 @@ public class CidadeBean implements Serializable {
 			cidades = cidadeDAO.listar();
 
 			Messages.addGlobalInfo("Cidade removida com sucesso");
-			
+
 		} catch (RuntimeException erro) {
 			Messages.addFlashGlobalError("Ocorreu um erro ao tentar remover a cidade");
 			erro.printStackTrace();
 		}
 	}
-	
-	public void editar(ActionEvent evento){
+
+	public void editar(ActionEvent evento) {
 		try {
 			cidade = (Cidade) evento.getComponent().getAttributes().get("cidadeSelecionada");
-
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar();
 
 		} catch (RuntimeException erro) {
 			Messages.addFlashGlobalError("Ocorreu um erro ao tentar selecionar uma cidade");
 			erro.printStackTrace();
-		}	
+		}
 	}
 }

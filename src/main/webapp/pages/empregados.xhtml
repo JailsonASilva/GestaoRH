@@ -7,6 +7,7 @@
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Registro do Empregado</title>
+	<h:outputScript library="js" name="scripts.js" />
 </h:head>
 <h:body>
 	<p:growl id="mensagem" />
@@ -39,7 +40,9 @@
 				<p:column headerText="Data Nascimento"
 					sortBy="#{empregado.dataNascimento}"
 					filterBy="#{empregado.dataNascimento}">
-					<h:outputText value="#{empregado.dataNascimento}" />
+					<h:outputText value="#{empregado.dataNascimento}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
 				</p:column>
 
 				<p:column headerText="CPF" sortBy="#{empregado.cpf}"
@@ -77,16 +80,15 @@
 		</p:panel>
 	</h:form>
 
-	<p:dialog header="empregado do Empregado - Cadastro"
-		widgetVar="dialogo" draggable="false" resizable="false" modal="true"
-		closable="false">
+	<p:dialog header="Registro do Empregado - Cadastro" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
 		<h:form id="formCadastro">
 			<h:panelGrid id="painel" columns="2">
 				<p:growl id="msgs" showDetail="true" />
 
 				<h3 style="margin-top: 0"></h3>
 
-				<p:tabView id="tabView">
+				<p:tabView id="tabView" cache="true" dynamic="true">
 					<p:tab id="tabDadosPessoais" title="Dados Pessoais">
 						<p:panel>
 							<h:panelGrid columns="4" columnClasses="label, value">
@@ -123,7 +125,8 @@
 									value="#{empregadoBean.empregado.nacionalidade}" />
 
 								<p:outputLabel for="dataNascimento" value="Data de Nascimento" />
-								<p:calendar id="dataNascimento"
+								<p:calendar id="dataNascimento" mask="99/99/99"
+									yearRange="1900:2222"
 									value="#{empregadoBean.empregado.dataNascimento}"
 									required="true"
 									requiredMessage="O campo 'Data de Nascimento' é obrigatório"
@@ -150,8 +153,8 @@
 									value="#{empregadoBean.empregado.localNascimento}">
 									<f:selectItem noSelectionOption="true"
 										itemLabel="Selecione um Local de Nascimento" />
-									<f:selectItems value="#{empregadoBean.cidades}" var="cidade"
-										itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+									<f:selectItems value="#{empregadoBean.cidadesNasc}"
+										var="cidade" itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="cpf" value="CPF:" />
@@ -257,23 +260,19 @@
 
 								<p:outputLabel for="telefone" value="Telefone" />
 								<p:inputMask id="telefone" mask="(99)9999-9999" size="15"
-									value="#{empregadoBean.empregado.telefone}" required="true"
-									requiredMessage="O campo 'Telefone' é obrigatório" />
+									value="#{empregadoBean.empregado.telefone}" />
 
 								<p:outputLabel for="celular" value="Celular 1" />
 								<p:inputMask id="celular" mask="(99)99999-9999" size="15"
-									value="#{empregadoBean.empregado.celular1}" required="true"
-									requiredMessage="O campo 'Celular 1' é obrigatório" />
+									value="#{empregadoBean.empregado.celular1}" />
 
 								<p:outputLabel for="celular2" value="Celular 2" />
 								<p:inputMask id="celular2" mask="(99)99999-9999" size="15"
-									value="#{empregadoBean.empregado.celular2}" required="true"
-									requiredMessage="O campo 'Celular 2' é obrigatório" />
+									value="#{empregadoBean.empregado.celular2}" />
 
 								<p:outputLabel for="email" value="Email" />
 								<p:inputText id="email" maxlength="100" size="50"
-									value="#{empregadoBean.empregado.email}" required="true"
-									requiredMessage="O campo 'Email' é obrigatório" />
+									value="#{empregadoBean.empregado.email}" />
 
 								<p:outputLabel for="observacaoContato" value="Observação" />
 								<p:inputText id="observacaoContato" maxlength="100" size="80"
@@ -328,14 +327,16 @@
 							<h:panelGrid columns="4" columnClasses="label, value">
 
 								<p:outputLabel for="dataAdmissao" value="Data de Admissão" />
-								<p:calendar id="dataAdmissao"
+								<p:calendar id="dataAdmissao" mask="99/99/99"
+									yearRange="1900:2222"
 									value="#{empregadoBean.empregado.dataAdmissao}" required="true"
 									requiredMessage="O campo 'Data de Admissão' é obrigatório"
 									size="10" locale="pt_BR" showButtonPanel="true"
 									navigator="true" />
 
 								<p:outputLabel for="dataDemissao" value="Data de Demissão" />
-								<p:calendar id="dataDemissao"
+								<p:calendar id="dataDemissao" mask="99/99/99"
+									yearRange="1900:2222"
 									value="#{empregadoBean.empregado.dataDemissao}" size="10"
 									locale="pt_BR" showButtonPanel="true" navigator="true" />
 
@@ -344,15 +345,14 @@
 									requiredMessage="O campo 'Cargo' é obrigatório"
 									converter="omnifaces.SelectItemsConverter"
 									value="#{empregadoBean.empregado.cargo}">
-									<f:selectItem noSelectionOption="true"
-										itemLabel="Selecione um Empregado" />
+									<f:selectItem noSelectionOption="false"
+										itemLabel="Selecione um Cargo" />
 									<f:selectItems value="#{empregadoBean.cargos}" var="cargo"
 										itemValue="#{cargo}" itemLabel="#{cargo.nome}" />
 
-
-									<f:ajax onevent="onclick" listener="#{empregadoBean.popularCargo}"
-										udpate=":formCadastro:tabView:cargo" />
-
+									<p:ajax event="focus" render="@this" execute="@this"
+										listener="#{empregadoBean.popularCidade}"
+										update=":formCadastro:tabView:cidade" />
 								</p:selectOneMenu>
 
 								<p:outputLabel for="secao" value="Seção" />
@@ -461,7 +461,8 @@
 				<p:commandButton value="Salvar"
 					actionListener="#{empregadoBean.salvar}"
 					update=":mensagem :formCadastro:painel :formListagem:tabela" />
-				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();"
+					actionListener="#{empregadoBean.fecharConexao()}" />
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>
