@@ -345,5 +345,5 @@ public class EmpregadoBean implements Serializable {
 		if (sessao.isOpen() == true) {
 			sessao.close();
 		}
-	}
+	}	
 }

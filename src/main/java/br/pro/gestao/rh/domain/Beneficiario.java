@@ -26,7 +26,7 @@ public class Beneficiario extends GenericDomain {
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
-	private Date nascimento;
+	private Date dataNascimento;
 
 	public String getNome() {
 		return nome;
@@ -36,12 +36,12 @@ public class Beneficiario extends GenericDomain {
 		this.nome = nome;
 	}
 
-	public Empregado getEmpregado() {
-		return empregado;
-	}
-
 	public void setEmpregado(Empregado empregado) {
 		this.empregado = empregado;
+	}
+
+	public Empregado getEmpregado() {
+		return empregado;
 	}
 
 	public Parentesco getParentesco() {
@@ -52,12 +52,12 @@ public class Beneficiario extends GenericDomain {
 		this.parentesco = parentesco;
 	}
 
-	public Date getNascimento() {
-		return nascimento;
+	public Date getDataNascimento() {
+		return dataNascimento;
 	}
 
-	public void setNascimento(Date nascimento) {
-		this.nascimento = nascimento;
+	public void setDataNascimento(Date dataNascimento) {
+		this.dataNascimento = dataNascimento;
 	}
 
 }

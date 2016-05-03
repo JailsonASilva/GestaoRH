@@ -33,7 +33,6 @@ public class Empregado extends GenericDomain {
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)	
 	private Date dataNascimento;
-	
 	@ManyToOne
 	@JoinColumn(nullable = false)	
 	private EstadoCivil estaoCivil;

@@ -45,6 +45,7 @@ public class GenericDAO<Entidade> {
 			Criteria consulta = sessao.createCriteria(classe);
 			List<Entidade> resultado = consulta.list();
 			return resultado;
+			
 		} catch (RuntimeException erro) {
 			throw erro;
 		} finally {
