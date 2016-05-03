@@ -12,10 +12,18 @@
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="connection.url">jdbc:mysql://127.0.0.1:3306/rh</property>
 		<property name="connection.username">root</property>
-		<property name="connection.password">tec2013</property>
+		<property name="connection.password">toor</property>
+
+		<property name="hibernate.format_sql">true</property>
 
 		<!-- Pool de Conexões -->
-		<property name="connection.pool_size">1</property>
+		<property name="hibernate.c3p0.acquire_increment">1</property>
+		<property name="hibernate.c3p0.idle_test_period">300</property>
+		<property name="hibernate.c3p0.timeout">120</property>
+		<property name="hibernate.c3p0.max_size">10</property>
+		<property name="hibernate.c3p0.min_size">1</property>
+		<property name="hibernate.c3p0.max_statement">0</property>
+		<property name="hibernate.c3p0.preferredTestQuery">select 1;</property>
 
 		<!-- SQL dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
@@ -32,17 +40,17 @@
 		<!-- Cria as tabelas do banco de dados -->
 		<property name="hbm2ddl.auto">update</property>
 
-		<!-- Mapeamento das entidades-->
+		<!-- Mapeamento das entidades -->
 		<mapping class="br.pro.gestao.rh.domain.EstadoCivil" />
 		<mapping class="br.pro.gestao.rh.domain.Estado" />
-		<mapping class="br.pro.gestao.rh.domain.Cidade" /> 
-		<mapping class="br.pro.gestao.rh.domain.Bairro"/>
-		<mapping class="br.pro.gestao.rh.domain.Banco"/>
-		<mapping class="br.pro.gestao.rh.domain.Cargo"/>
-		<mapping class="br.pro.gestao.rh.domain.Parentesco"/>
-		<mapping class="br.pro.gestao.rh.domain.Empregado"/>
-		<mapping class="br.pro.gestao.rh.domain.CausaAcidente"/>
-		<mapping class="br.pro.gestao.rh.domain.Beneficiario"/>
+		<mapping class="br.pro.gestao.rh.domain.Cidade" />
+		<mapping class="br.pro.gestao.rh.domain.Bairro" />
+		<mapping class="br.pro.gestao.rh.domain.Banco" />
+		<mapping class="br.pro.gestao.rh.domain.Cargo" />
+		<mapping class="br.pro.gestao.rh.domain.Parentesco" />
+		<mapping class="br.pro.gestao.rh.domain.Empregado" />
+		<mapping class="br.pro.gestao.rh.domain.CausaAcidente" />
+		<mapping class="br.pro.gestao.rh.domain.Beneficiario" />
 
 	</session-factory>
 
