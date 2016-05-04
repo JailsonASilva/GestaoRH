@@ -39,5 +39,5 @@
 	<!-- Carregamento do Hibernate -->
 	<listener>
 		<listener-class>br.pro.gestao.rh.util.HibernateContexto</listener-class>
-	</listener> 
+	</listener>
 </web-app>
