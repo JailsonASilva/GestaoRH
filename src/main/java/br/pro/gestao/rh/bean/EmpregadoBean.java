@@ -208,7 +208,7 @@ public class EmpregadoBean implements Serializable {
 			cargo = new Cargo();
 			civil = new EstadoCivil();
 
-			ListarFE();
+			listarTabelas();
 
 		} catch (Exception erro) {
 			Messages.addGlobalError("Erro ao Gerar Novo Empregado!");
@@ -219,6 +219,8 @@ public class EmpregadoBean implements Serializable {
 	public void editar(ActionEvent evento) {
 		try {
 			empregado = (Empregado) evento.getComponent().getAttributes().get("empregadoSelecionado");
+			
+			listarTabelas();
 
 			cidade = empregado.getBairro().getCidade();
 			estado = empregado.getBairro().getCidade().getEstado();
@@ -297,7 +299,7 @@ public class EmpregadoBean implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	@RequestScoped
-	public void ListarFE() {
+	public void listarTabelas() {
 		try {
 			if (sessao.isOpen() == false) {
 				sessao = HibernateUtil.getFabricaDeSessoes().openSession();

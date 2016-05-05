@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Acidentes</title>
+	<h:outputScript library="js" name="scripts.js" />
+
+</h:head>
+<h:body>
+	<p:growl id="mensagem" />
+
+	<h:form id="formListagem">
+		<p:panel header="Acidentes - Listagem">
+			<h:panelGrid id="painelEmpregado" columns="1">
+				<p:outputLabel value="Empregado" />
+			</h:panelGrid>
+
+			<h:panelGrid id="painelBusca" columns="2">
+				<p:selectOneMenu id="empregado" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{acidenteBean.empregado}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Empregado" />
+					<f:selectItems value="#{acidenteBean.empregados}" var="empregado"
+						itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
+					<p:ajax listener="#{acidenteBean.listarBeneficiarios}"
+						update=":mensagem :formListagem:tabela" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+				paginator="true" value="#{acidenteBean.acidentes}" var="acidente"
+				rows="10">
+				<f:facet name="footer">
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+						actionListener="#{acidenteBean.novo}"
+						update=":formCadastro:painel">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Data" sortBy="#{acidente.data}"
+					filterBy="#{acidente.data}">
+					<h:outputText value="#{acidente.data}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Local" sortBy="#{acidente.local.nome}"
+					filterBy="#{acidente.local.nome}">
+					<h:outputText value="#{acidente.local.nome}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Causa" sortBy="#{acidente.causaAcidente.nome}"
+					filterBy="#{acidente.causaAcidente.nome}">
+					<h:outputText value="#{acidente.causaAcidente.nome}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Alta em" sortBy="#{acidente.altaEm}"
+					filterBy="#{acidente.altaEm}">
+					<h:outputText value="#{acidente.altaEm}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Resultado" sortBy="#{acidente.resultado}"
+					filterBy="#{acidente.resultado}">
+					<h:outputText value="#{acidente.resultado}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{acidenteBean.excluir}"
+						update=":mensagem :formListagem:tabela">
+						<p:confirm header="Confirmação"
+							message="Deseja Excluir este Acidente" icon="ui-icon-alert" />
+						<f:attribute name="acidenteSelecionado" value="#{acidente}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{acidenteBean.editar}"
+						update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+						<f:attribute name="acidenteSelecionado" value="#{acidente}" />
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Acidentes - Cadastro" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="formCadastro">
+			<h:panelGrid id="painel" columns="2">
+				<p:outputLabel for="empregado" value="Empregado" />
+				<p:selectOneMenu id="empregado" filter="true" required="true"
+					requiredMessage="O campo 'Empregado' é obrigatório"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{acidenteBean.acidente.empregado}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Empregado" />
+					<f:selectItems value="#{acidenteBean.empregados}" var="empregado"
+						itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="data" value="Data " />
+				<p:calendar id="data" mask="99/99/99"
+					value="#{acidenteBean.acidente.data}" required="true"
+					requiredMessage="O campo 'Data Inicial(Referência)' é obrigatório"
+					size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+				<p:outputLabel for="local" value="Local" />
+				<p:selectOneMenu id="local" filter="true" required="true"
+					requiredMessage="O campo 'Local' é obrigatório"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{acidenteBean.acidente.local}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Local" />
+					<f:selectItems value="#{acidenteBean.locais}" var="local"
+						itemValue="#{local}" itemLabel="#{local.nome}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="causa" value="Causa" />
+				<p:selectOneMenu id="causa" filter="true" required="true"
+					requiredMessage="O campo 'Causa' é obrigatório"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{acidenteBean.acidente.causaAcidente}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione uma Causa de Acidente" />
+					<f:selectItems value="#{acidenteBean.causaAcidenteList}"
+						var="causa" itemValue="#{causa}" itemLabel="#{causa.nome}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="altaEm" value="Alta Em" />
+				<p:calendar id="altaEm" mask="99/99/99"
+					value="#{acidenteBean.acidente.altaEm}" size="10" locale="pt_BR"
+					showButtonPanel="true" navigator="true" />
+
+				<p:outputLabel value="Resultado" />
+				<p:inputText id="resultado" maxlength="50" size="30"
+					value="#{acidenteBean.acidente.resultado}" />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar"
+					actionListener="#{acidenteBean.salvar}"
+					update=":mensagem :formCadastro:painel :formListagem:tabela" />
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

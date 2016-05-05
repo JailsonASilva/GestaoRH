@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Horários</title>
+</h:head>
+<h:body>
+	<p:growl id="mensagem" />
+
+	<h:form id="formListagem">
+		<p:panel header="Horários - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+				paginator="true" value="#{horarioBean.horarios}" var="horario"
+				rows="10">
+				<f:facet name="footer">
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+						actionListener="#{horarioBean.novo}" update=":formCadastro:painel">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Nome" sortBy="#{horario.nome}"
+					filterBy="#{horario.nome}">
+					<h:outputText value="#{horario.nome}" />
+				</p:column>
+
+				<p:column headerText="Domingo" sortBy="#{horario.domingo}">
+					<p:selectBooleanCheckbox value="#{horario.domingo}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Segunda" sortBy="#{horario.segunda}">
+					<p:selectBooleanCheckbox value="#{horario.segunda}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Terça" sortBy="#{horario.terca}">
+					<p:selectBooleanCheckbox value="#{horario.terca}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Quarta" sortBy="#{horario.quarta}">
+					<p:selectBooleanCheckbox value="#{horario.quarta}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Quinta" sortBy="#{horario.quinta}">
+					<p:selectBooleanCheckbox value="#{horario.quinta}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Sexta" sortBy="#{horario.sexta}">
+					<p:selectBooleanCheckbox value="#{horario.sexta}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Sábado" sortBy="#{horario.sabado}">
+					<p:selectBooleanCheckbox value="#{horario.sabado}" disabled="true" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{horarioBean.excluir}"
+						update=":mensagem :formListagem:tabela">
+						<p:confirm header="Confirmação"
+							message="Deseja Excluir este Horário?" icon="ui-icon-alert" />
+						<f:attribute name="horarioSelecionado" value="#{horario}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{horarioBean.editar}"
+						update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+						<f:attribute name="horarioSelecionado" value="#{horario}" />
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Horários - Cadastro" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="formCadastro">
+			<h:panelGrid id="painel" columns="4">
+				<p:outputLabel for="nome" value="Nome:" />
+				<p:inputText id="nome" maxlength="50" size="30" required="true"
+					requiredMessage="Campo 'Nome' Obrigatório"
+					value="#{horarioBean.horario.nome}" />
+
+				<p:outputLabel for="tipo" value="Tipo de Horário" />
+				<p:selectOneMenu id="tipo" filter="true" required="true"
+					requiredMessage="O campo 'Tipo' é obrigatório"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{horarioBean.horario.tipoHorario}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Tipo de Horário" />
+					<f:selectItem itemValue="Normal" itemLabel="Normal" />
+					<f:selectItem itemValue="Intra Jornada" itemLabel="Intra Jornada" />
+					<f:selectItem itemValue="Livre" itemLabel="Livre" />
+					<f:selectItems />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<h:panelGrid id="painelHorarios" columns="4">
+				<p:panel header="Domingo">
+					<h:panelGrid id="painelDomingo" columns="2">
+						<p:outputLabel for="domingo" value="Ativo" />
+						<p:selectBooleanCheckbox id="domingo"
+							value="#{horarioBean.horario.domingo}" required="true"
+							requiredMessage="O campo 'Domingo' é obrigatório" />
+
+						<p:outputLabel for="descansoDomingo" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoDomingo"
+							value="#{horarioBean.horario.descansoDomingo}" />
+
+						<p:outputLabel for="entradaDomingo" value="Entrada" />
+						<p:inputMask id="entradaDomingo" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.entradaDomingo}" />
+
+						<p:outputLabel for="intervaloSaiDomingo" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiDomingo" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiDomingo}" />
+
+						<p:outputLabel for="intervaloEntDomingo" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntDomingo" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntDomingo}" />
+
+						<p:outputLabel for="saidaDomingo" value="Saída" />
+						<p:inputMask id="saidaDomingo" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaDomingo}" />
+					</h:panelGrid>
+				</p:panel>
+
+
+				<p:panel header="Segunda">
+					<h:panelGrid id="painelSegunda" columns="2">
+						<p:outputLabel for="segunda" value="Ativo" />
+						<p:selectBooleanCheckbox id="segunda"
+							value="#{horarioBean.horario.segunda}" required="true"
+							requiredMessage="O campo 'Segunda' é obrigatório" />
+
+						<p:outputLabel for="descansoSegunda" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoSegunda"
+							value="#{horarioBean.horario.descansoSegunda}" />
+
+						<p:outputLabel for="entradaSegunda" value="Entrada" />
+						<p:inputMask id="entradaSegunda" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.entradaSegunda}" />
+
+						<p:outputLabel for="intervaloSaiSegunda" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiSegunda" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiSegunda}" />
+
+						<p:outputLabel for="intervaloEntSegunda" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntSegunda" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntSegunda}" />
+
+						<p:outputLabel for="saidaSegunda" value="Saída" />
+						<p:inputMask id="saidaSegunda" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaSegunda}" />
+					</h:panelGrid>
+				</p:panel>
+
+
+				<p:panel header="Terça">
+					<h:panelGrid id="painelTerca" columns="2">
+						<p:outputLabel for="terca" value="Ativo" />
+						<p:selectBooleanCheckbox id="terca"
+							value="#{horarioBean.horario.terca}" required="true"
+							requiredMessage="O campo 'Terça' é obrigatório" />
+
+						<p:outputLabel for="descansoTerca" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoTerca"
+							value="#{horarioBean.horario.descansoTerca}" />
+
+						<p:outputLabel for="entradaTerca" value="Entrada" />
+						<p:inputMask id="entradaTerca" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.entradaTerca}" />
+
+						<p:outputLabel for="intervaloSaiTerca" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiTerca" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiTerca}" />
+
+						<p:outputLabel for="intervaloEntTerca" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntTerca" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntTerca}" />
+
+						<p:outputLabel for="saidaTerca" value="Saída" />
+						<p:inputMask id="saidaTerca" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaTerca}" />
+					</h:panelGrid>
+				</p:panel>
+
+
+				<p:panel header="Quarta">
+					<h:panelGrid id="painelQuarta" columns="2">
+						<p:outputLabel for="quarta" value="Ativo" />
+						<p:selectBooleanCheckbox id="quarta"
+							value="#{horarioBean.horario.quarta}" required="true"
+							requiredMessage="O campo 'Quarta' é obrigatório" />
+
+						<p:outputLabel for="descansoQuarta" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoQuarta"
+							value="#{horarioBean.horario.descansoQuarta}" />
+
+						<p:outputLabel for="entradaQuarta" value="Entrada" />
+						<p:inputMask id="entradaQuarta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.entradaQuarta}" />
+
+						<p:outputLabel for="intervaloSaiQuarta" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiQuarta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiQuarta}" />
+
+						<p:outputLabel for="intervaloEntQuarta" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntQuarta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntQuarta}" />
+
+						<p:outputLabel for="saidaQuarta" value="Saída" />
+						<p:inputMask id="saidaQuarta" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaQuarta}" />
+					</h:panelGrid>
+				</p:panel>
+
+
+				<p:panel header="Quinta">
+					<h:panelGrid id="painelQuinta" columns="2">
+						<p:outputLabel for="quinta" value="Ativo" />
+						<p:selectBooleanCheckbox id="quinta"
+							value="#{horarioBean.horario.quinta}" required="true"
+							requiredMessage="O campo 'Quinta' é obrigatório" />
+
+						<p:outputLabel for="descansoQuinta" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoQuinta"
+							value="#{horarioBean.horario.descansoQuinta}" />
+
+						<p:outputLabel for="entradaQuinta" value="Entrada" />
+						<p:inputMask id="entradaQuinta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.entradaQuinta}" />
+
+						<p:outputLabel for="intervaloSaiQuinta" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiQuinta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiQuinta}" />
+
+						<p:outputLabel for="intervaloEntQuinta" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntQuinta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntQuinta}" />
+
+						<p:outputLabel for="saidaQuinta" value="Saída" />
+						<p:inputMask id="saidaQuinta" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaQuinta}" />
+					</h:panelGrid>
+				</p:panel>
+
+
+				<p:panel header="Sexta">
+					<h:panelGrid id="painelSexta" columns="2">
+						<p:outputLabel for="sexta" value="Ativo" />
+						<p:selectBooleanCheckbox id="sexta"
+							value="#{horarioBean.horario.sexta}" required="true"
+							requiredMessage="O campo 'Sexta' é obrigatório" />
+
+						<p:outputLabel for="descansoSexta" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoSexta"
+							value="#{horarioBean.horario.descansoSexta}" />
+
+						<p:outputLabel for="entradaSexta" value="Entrada" />
+						<p:inputMask id="entradaSexta" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.entradaSexta}" />
+
+						<p:outputLabel for="intervaloSaiSexta" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiSexta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiSexta}" />
+
+						<p:outputLabel for="intervaloEntSexta" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntSexta" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntSexta}" />
+
+						<p:outputLabel for="saidaSexta" value="Saída" />
+						<p:inputMask id="saidaSexta" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaSexta}" />
+					</h:panelGrid>
+				</p:panel>
+
+
+				<p:panel header="Sábado">
+					<h:panelGrid id="painelSabado" columns="2">
+						<p:outputLabel for="sabado" value="Ativo" />
+						<p:selectBooleanCheckbox id="sabado"
+							value="#{horarioBean.horario.sabado}" required="true"
+							requiredMessage="O campo 'Sábado' é obrigatório" />
+
+						<p:outputLabel for="descansoSabado" value="Descanso" />
+						<p:selectBooleanCheckbox id="descansoSabado"
+							value="#{horarioBean.horario.descansoSabado}" />
+
+						<p:outputLabel for="entradaSabado" value="Entrada" />
+						<p:inputMask id="entradaSabado" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.entradaSabado}" />
+
+						<p:outputLabel for="intervaloSaiSabado" value="Intervalo Saída" />
+						<p:inputMask id="intervaloSaiSabado" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloSaiSabado}" />
+
+						<p:outputLabel for="intervaloEntSabado" value="Intervalo Entrada" />
+						<p:inputMask id="intervaloEntSabado" maxlength="6" size="3"
+							mask="99:99" value="#{horarioBean.horario.intervaloEntSabado}" />
+
+						<p:outputLabel for="saidaSabado" value="Saída" />
+						<p:inputMask id="saidaSabado" maxlength="6" size="3"
+							align="center" value="#{horarioBean.horario.saidaSabado}" />
+					</h:panelGrid>
+				</p:panel>
+
+				<p:panel header="Intra Jornada">
+					<h:panelGrid id="painelIntra" columns="2">
+						<p:outputLabel for="entradaIntra" value="Entrada" />
+						<p:inputMask id="entradaIntra" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.entradaIntra}" />
+
+						<p:outputLabel for="saidaIntra" value="Saída" />
+						<p:inputMask id="saidaIntra" maxlength="6" size="3" mask="99:99"
+							value="#{horarioBean.horario.saidaIntra}" />
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar"
+					actionListener="#{horarioBean.salvar}"
+					update=":mensagem :formCadastro:painel :formListagem:tabela" />
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

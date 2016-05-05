@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Sindical</title>
+	<h:outputScript library="js" name="scripts.js" />
+
+</h:head>
+<h:body>
+	<p:growl id="mensagem" />
+
+	<h:form id="formListagem">
+		<p:panel header="Sindical - Listagem">
+			<h:panelGrid id="painelEmpregado" columns="1">
+				<p:outputLabel value="Empregado" />
+			</h:panelGrid>
+
+			<h:panelGrid id="painelBusca" columns="2">
+				<p:selectOneMenu id="empregado" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{sindicalBean.empregado}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Empregado" />
+					<f:selectItems value="#{sindicalBean.empregados}" var="empregado"
+						itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
+					<p:ajax listener="#{sindicalBean.listarBeneficiarios}"
+						update=":mensagem :formListagem:tabela" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+				paginator="true" value="#{sindicalBean.sindicalList}" var="sindical"
+				rows="10">
+				<f:facet name="footer">
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+						actionListener="#{sindicalBean.novo}"
+						update=":formCadastro:painel">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Sindicato" sortBy="#{sindical.sindicato.nome}"
+					filterBy="#{sindical.sindicato.nome}">
+					<h:outputText value="#{sindical.sindicato.nome}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Data" sortBy="#{sindical.data}"
+					filterBy="#{sindical.data}">
+					<h:outputText value="#{sindical.data}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Valor R$">
+					<h:outputText value="#{sindical.valor}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{sindicalBean.excluir}"
+						update=":mensagem :formListagem:tabela">
+						<p:confirm header="Confirmação"
+							message="Deseja Excluir este Beneficiário?" icon="ui-icon-alert" />
+						<f:attribute name="feriasSelecionado" value="#{sindical}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{sindicalBean.editar}"
+						update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+						<f:attribute name="feriasSelecionado" value="#{sindical}" />
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Sindical - Cadastro" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="formCadastro">
+			<h:panelGrid id="painel" columns="2">
+				<p:outputLabel for="empregado" value="Empregado" />
+				<p:selectOneMenu id="empregado" filter="true" required="true"
+					requiredMessage="O campo 'Empregado' é obrigatório"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{sindicalBean.sindical.empregado}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Empregado" />
+					<f:selectItems value="#{sindicalBean.empregados}" var="empregado"
+						itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
+				</p:selectOneMenu>
+				
+				<p:outputLabel for="sindicato" value="Sindicato" />
+				<p:selectOneMenu id="sindicato" filter="true" required="true"
+					requiredMessage="O campo 'Sindicato' é obrigatório"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{sindicalBean.sindical.sindicato}">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um Sindicato" />
+					<f:selectItems value="#{sindicalBean.sindicatos}" var="sindicato"
+						itemValue="#{empregado}" itemLabel="#{sindicato.nome}" />
+				</p:selectOneMenu>				
+
+				<p:outputLabel for="data" value="Data Inicial(Referência) " />
+				<p:calendar id="data" mask="99/99/99" yearRange="1900:2222"
+					value="#{sindicalBean.sindical.data}" required="true"
+					requiredMessage="O campo 'Data Inicial(Referência)' é obrigatório"
+					size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+				<p:outputLabel for="valor" value="Valor R$" />
+				<p:inputText id="valor" maxlength="7" size="10"
+					value="#{sindicalBean.sindical.valor}" required="true"
+					requiredMessage="O campo 'Valor R$' é obrigatório"
+					converterMessage="Informe um valor válido para o campo 'Valor R$''"
+					validatorMessage="Informe um valor entre 0,01 e 9.999,99 para o Campo 'Valor R$'">
+					<f:validateDoubleRange minimum="0.01" maximum="9999.99" />
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</p:inputText>
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar"
+					actionListener="#{sindicalBean.salvar}"
+					update=":mensagem :formCadastro:painel :formListagem:tabela" />
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

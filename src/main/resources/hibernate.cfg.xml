@@ -51,6 +51,12 @@
 		<mapping class="br.pro.gestao.rh.domain.Empregado" />
 		<mapping class="br.pro.gestao.rh.domain.CausaAcidente" />
 		<mapping class="br.pro.gestao.rh.domain.Beneficiario" />
+		<mapping class="br.pro.gestao.rh.domain.Ferias" />
+		<mapping class="br.pro.gestao.rh.domain.Sindicato" />
+		<mapping class="br.pro.gestao.rh.domain.Sindical" />
+		<mapping class="br.pro.gestao.rh.domain.Local" />
+		<mapping class="br.pro.gestao.rh.domain.Acidente" />
+		<mapping class="br.pro.gestao.rh.domain.Horario" />
 
 	</session-factory>
 
