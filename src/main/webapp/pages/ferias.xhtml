@@ -1,158 +1,153 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
-<h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Férias</title>
-	<h:outputScript library="js" name="scripts.js" />
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
 
-</h:head>
-<h:body>
-	<p:growl id="mensagem" />
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Férias - Listagem">
+				<h:panelGrid id="painelEmpregado" columns="1">
+					<p:outputLabel value="Empregado" />
+				</h:panelGrid>
 
-	<h:form id="formListagem">
-		<p:panel header="Férias - Listagem">
-			<h:panelGrid id="painelEmpregado" columns="1">
-				<p:outputLabel value="Empregado" />
-			</h:panelGrid>
+				<h:panelGrid id="painelBusca" columns="2">
+					<p:selectOneMenu id="empregado" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{feriasBean.empregado}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um Empregado" />
+						<f:selectItems value="#{feriasBean.empregados}" var="empregado"
+							itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
+						<p:ajax listener="#{feriasBean.listarBeneficiarios}"
+							update=":mensagem :formListagem:tabela" />
+					</p:selectOneMenu>
+				</h:panelGrid>
 
-			<h:panelGrid id="painelBusca" columns="2">
-				<p:selectOneMenu id="empregado" filter="true"
-					converter="omnifaces.SelectItemsConverter"
-					value="#{feriasBean.empregado}">
-					<f:selectItem noSelectionOption="true"
-						itemLabel="Selecione um Empregado" />
-					<f:selectItems value="#{feriasBean.empregados}" var="empregado"
-						itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
-					<p:ajax listener="#{feriasBean.listarBeneficiarios}"
-						update=":mensagem :formListagem:tabela" />
-				</p:selectOneMenu>
-			</h:panelGrid>
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" value="#{feriasBean.feriasList}" var="ferias"
+					rows="10">
+					<f:facet name="footer">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{feriasBean.novo}" update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
 
-			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-				paginator="true" value="#{feriasBean.feriasList}" var="ferias"
-				rows="10">
-				<f:facet name="footer">
-					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-						actionListener="#{feriasBean.novo}" update=":formCadastro:painel">
-						<f:actionListener
-							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-					</p:commandButton>
-				</f:facet>
+					<p:column headerText="Data Inicial(Referência)"
+						sortBy="#{ferias.dataReferente1}"
+						filterBy="#{ferias.dataReferente1}">
+						<h:outputText value="#{ferias.dataReferente1}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+					</p:column>
 
-				<p:column headerText="Data Inicial(Referência)"
-					sortBy="#{ferias.dataReferente1}"
-					filterBy="#{ferias.dataReferente1}">
-					<h:outputText value="#{ferias.dataReferente1}">
-						<f:convertDateTime locale="pt_BR" />
-					</h:outputText>
-				</p:column>
+					<p:column headerText="Data Final(Referência)"
+						sortBy="#{ferias.dataReferente2}"
+						filterBy="#{ferias.dataReferente2}">
+						<h:outputText value="#{ferias.dataReferente2}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+					</p:column>
 
-				<p:column headerText="Data Final(Referência)"
-					sortBy="#{ferias.dataReferente2}"
-					filterBy="#{ferias.dataReferente2}">
-					<h:outputText value="#{ferias.dataReferente2}">
-						<f:convertDateTime locale="pt_BR" />
-					</h:outputText>
-				</p:column>
+					<p:column headerText="Data Inicial(Gozada)"
+						sortBy="#{ferias.dataGozada1}" filterBy="#{ferias.dataGozada1}">
+						<h:outputText value="#{ferias.dataGozada1}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+					</p:column>
 
-				<p:column headerText="Data Inicial(Gozada)"
-					sortBy="#{ferias.dataGozada1}" filterBy="#{ferias.dataGozada1}">
-					<h:outputText value="#{ferias.dataGozada1}">
-						<f:convertDateTime locale="pt_BR" />
-					</h:outputText>
-				</p:column>
+					<p:column headerText="Data Final(Gozada)"
+						sortBy="#{ferias.dataGozada2}" filterBy="#{ferias.dataGozada2}">
+						<h:outputText value="#{ferias.dataGozada2}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+					</p:column>
 
-				<p:column headerText="Data Final(Gozada)"
-					sortBy="#{ferias.dataGozada2}" filterBy="#{ferias.dataGozada2}">
-					<h:outputText value="#{ferias.dataGozada2}">
-						<f:convertDateTime locale="pt_BR" />
-					</h:outputText>
-				</p:column>
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{feriasBean.excluir}"
+							update=":mensagem :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Férias?" icon="ui-icon-alert" />
+							<f:attribute name="feriasSelecionado" value="#{ferias}" />
+						</p:commandButton>
 
-				<p:column headerText="Opções">
-					<p:commandButton icon="ui-icon-trash"
-						actionListener="#{feriasBean.excluir}"
-						update=":mensagem :formListagem:tabela">
-						<p:confirm header="Confirmação"
-							message="Deseja Excluir este Férias?" icon="ui-icon-alert" />
-						<f:attribute name="feriasSelecionado" value="#{ferias}" />
-					</p:commandButton>
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{feriasBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="feriasSelecionado" value="#{ferias}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
 
-					<p:commandButton icon="ui-icon-pencil"
-						actionListener="#{feriasBean.editar}"
-						update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
-						<f:attribute name="feriasSelecionado" value="#{ferias}" />
-						<f:actionListener
-							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-					</p:commandButton>
-				</p:column>
+				</p:dataTable>
 
-			</p:dataTable>
-
-			<p:confirmDialog global="true">
-				<p:commandButton value="Sim" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Não" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-		</p:panel>
-	</h:form>
-
-	<p:dialog header="Férias - Cadastro" widgetVar="dialogo"
-		draggable="false" resizable="false" modal="true" closable="false">
-		<h:form id="formCadastro">
-			<h:panelGrid id="painel" columns="2">
-				<p:outputLabel for="empregado" value="Empregado" />
-				<p:selectOneMenu id="empregado" filter="true" required="true"
-					requiredMessage="O campo 'Empregado' é obrigatório"
-					converter="omnifaces.SelectItemsConverter"
-					value="#{feriasBean.ferias.empregado}">
-					<f:selectItem noSelectionOption="true"
-						itemLabel="Selecione um Empregado" />
-					<f:selectItems value="#{feriasBean.empregados}" var="empregado"
-						itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
-				</p:selectOneMenu>
-
-				<p:outputLabel for="dataReferente1"
-					value="Data Inicial(Referência) " />
-				<p:calendar id="dataReferente1" mask="99/99/99"
-					yearRange="1900:2222" value="#{feriasBean.ferias.dataReferente1}"
-					required="true"
-					requiredMessage="O campo 'Data Inicial(Referência)' é obrigatório"
-					size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-				<p:outputLabel for="dataReferente2" value="Data Final(Referência) " />
-				<p:calendar id="dataReferente2" mask="99/99/99"
-					yearRange="1900:2222" value="#{feriasBean.ferias.dataReferente2}"
-					required="true"
-					requiredMessage="O campo 'Data Final(Referência)' é obrigatório"
-					size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-				<p:outputLabel for="dataGozada1" value="Data Inicial(Gozada) " />
-				<p:calendar id="dataGozada1" mask="99/99/99" yearRange="1900:2222"
-					value="#{feriasBean.ferias.dataGozada1}" required="true"
-					requiredMessage="O campo 'Data Inicial(Gozada)' é obrigatório"
-					size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-				<p:outputLabel for="dataGozada2" value="Data Final(Gozada) " />
-				<p:calendar id="dataGozada2" mask="99/99/99" yearRange="1900:2222"
-					value="#{feriasBean.ferias.dataGozada2}" required="true"
-					requiredMessage="O campo 'Data Final(Gozada)' é obrigatório"
-					size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-			</h:panelGrid>
-
-			<h:panelGrid columns="2">
-				<p:commandButton value="Salvar"
-					actionListener="#{feriasBean.salvar}"
-					update=":mensagem :formCadastro:painel :formListagem:tabela" />
-				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
-			</h:panelGrid>
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
 		</h:form>
-	</p:dialog>
-</h:body>
-</html>
+
+		<p:dialog header="Férias - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel for="empregado" value="Empregado" />
+					<p:selectOneMenu id="empregado" filter="true" required="true"
+						requiredMessage="O campo 'Empregado' é obrigatório"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{feriasBean.ferias.empregado}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um Empregado" />
+						<f:selectItems value="#{feriasBean.empregados}" var="empregado"
+							itemValue="#{empregado}" itemLabel="#{empregado.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dataReferente1"
+						value="Data Inicial(Referência) " />
+					<p:calendar id="dataReferente1" mask="99/99/99"
+						yearRange="1900:2222" value="#{feriasBean.ferias.dataReferente1}"
+						required="true"
+						requiredMessage="O campo 'Data Inicial(Referência)' é obrigatório"
+						size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataReferente2" value="Data Final(Referência) " />
+					<p:calendar id="dataReferente2" mask="99/99/99"
+						yearRange="1900:2222" value="#{feriasBean.ferias.dataReferente2}"
+						required="true"
+						requiredMessage="O campo 'Data Final(Referência)' é obrigatório"
+						size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataGozada1" value="Data Inicial(Gozada) " />
+					<p:calendar id="dataGozada1" mask="99/99/99" yearRange="1900:2222"
+						value="#{feriasBean.ferias.dataGozada1}" required="true"
+						requiredMessage="O campo 'Data Inicial(Gozada)' é obrigatório"
+						size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataGozada2" value="Data Final(Gozada) " />
+					<p:calendar id="dataGozada2" mask="99/99/99" yearRange="1900:2222"
+						value="#{feriasBean.ferias.dataGozada2}" required="true"
+						requiredMessage="O campo 'Data Final(Gozada)' é obrigatório"
+						size="10" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{feriasBean.salvar}"
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
